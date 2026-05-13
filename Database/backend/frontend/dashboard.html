@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Iris Attendance</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            color: white;
+        }
+        .stat-card.green {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+        }
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .stat-label {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        .records-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+        }
+        .record-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .record-photo {
+            width: 100%;
+            height: 120px;
+            background: #f1f5f9;
+            overflow: hidden;
+        }
+        .record-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .record-info {
+            padding: 10px;
+            font-size: 12px;
+        }
+        .record-name {
+            font-weight: bold;
+            color: #1e293b;
+            margin: 5px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .record-id {
+            color: #64748b;
+            margin: 2px 0;
+        }
+        .record-meal {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-top: 5px;
+            text-align: center;
+        }
+        .meal-taken {
+            background: #d1fae5;
+            color: #16a34a;
+        }
+        .meal-not-taken {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        .student-card {
+            background: #f0f9ff;
+            border: 2px solid #bfdbfe;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        .section-title {
+            color: #1e293b;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 20px 0 10px 0;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-container">
+        <!-- Header -->
+        <header class="header">
+            <button class="back-btn" onclick="goBack()">← Back</button>
+            <h1>📊 Dashboard</h1>
+        </header>
+
+        <!-- Dashboard Container -->
+        <div class="dashboard-container" style="padding: 15px;">
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalStudents">0</div>
+                    <div class="stat-label">👥 Students</div>
+                </div>
+                <div class="stat-card green">
+                    <div class="stat-number" id="totalRecords">0</div>
+                    <div class="stat-label">📋 Attendance</div>
+                </div>
+            </div>
+
+            <!-- Attendance Records -->
+            <div class="section-title">📸 Recent Attendance Records</div>
+            <div id="tableContainer" style="min-height: 100px;">
+                <p style="text-align: center; color: #64748b;">⏳ Loading records...</p>
+            </div>
+
+            <!-- Registered Students -->
+            <div class="section-title">👥 All Registered Students</div>
+            <div id="studentsContainer" style="min-height: 100px;">
+                <p style="text-align: center; color: #64748b;">⏳ Loading students...</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>✅ All data saved locally on your computer</p>
+        </footer>
+    </div>
+
+    <script>
+        // Load data on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadAttendanceRecords();
+            loadRegisteredStudents();
+        });
+
+        async function loadAttendanceRecords() {
+            try {
+                const response = await fetch('http://localhost:5000/attendence');
+                const records = await response.json();
+
+                if (!Array.isArray(records) || records.length === 0) {
+                    document.getElementById('tableContainer').innerHTML = '<p style="text-align: center; color: #64748b;">📭 No attendance records found yet</p>';
+                    document.getElementById('totalRecords').textContent = '0';
+                    return;
+                }
+
+                // Update stats
+                document.getElementById('totalRecords').textContent = records.length;
+
+                // Build grid of records with photos
+                let html = '<div class="records-grid">';
+
+                records.forEach(record => {
+                    const mealClass = record.meal_status === 'Taken' ? 'meal-taken' : 'meal-not-taken';
+                    const mealIcon = record.meal_status === 'Taken' ? '✅' : '❌';
+                    
+                    // Use base64 photo
+                    const photoSrc = record.attendance_photo;
+                    
+                    html += `
+                        <div class="record-card">
+                            <div class="record-photo">
+                                ${photoSrc ? 
+                                    `<img src="${photoSrc}" alt="Attendance Photo">` :
+                                    `<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #94a3b8; background: #f1f5f9;">📷</div>`
+                                }
+                            </div>
+                            <div class="record-info">
+                                <div class="record-name">${record.student_name || 'Unknown'}</div>
+                                <div class="record-id">ID: ${record.student_id}</div>
+                                <div class="record-id">📚 ${record.student_class}</div>
+                                <div class="record-id">📅 ${record.attendance_date}</div>
+                                <div class="record-id">⏰ ${record.attendance_time}</div>
+                                <div class="record-meal ${mealClass}">
+                                    ${mealIcon} ${record.meal_status}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += '</div>';
+                document.getElementById('tableContainer').innerHTML = html;
+
+            } catch (err) {
+                console.error('Error loading records:', err);
+                document.getElementById('tableContainer').innerHTML = '<p style="text-align: center; color: #dc2626;">❌ Failed to load records: ' + err.message + '</p>';
+            }
+        }
+
+        async function loadRegisteredStudents() {
+            try {
+                const response = await fetch('http://localhost:5000/students');
+                const students = await response.json();
+
+                if (!Array.isArray(students) || students.length === 0) {
+                    document.getElementById('studentsContainer').innerHTML = '<p style="text-align: center; color: #64748b;">📭 No students registered yet</p>';
+                    document.getElementById('totalStudents').textContent = '0';
+                    return;
+                }
+
+                document.getElementById('totalStudents').textContent = students.length;
+
+                // Build student cards
+                let html = '';
+
+                students.forEach(student => {
+                    const regDate = new Date(student.registered_date).toLocaleDateString();
+                    
+                    html += `
+                        <div class="student-card">
+                            <div style="display: flex; gap: 10px; align-items: flex-start;">
+                                <div style="flex: 1;">
+                                    <div style="font-weight: bold; color: #1e293b; font-size: 16px;">👤 ${student.student_name}</div>
+                                    <div style="color: #64748b; font-size: 13px; margin: 5px 0;">
+                                        <strong>ID:</strong> ${student.student_id}
+                                    </div>
+                                    <div style="color: #64748b; font-size: 13px; margin: 5px 0;">
+                                        <strong>Class:</strong> ${student.student_class}
+                                    </div>
+                                    <div style="color: #64748b; font-size: 13px; margin: 5px 0;">
+                                        <strong>Registered:</strong> ${regDate}
+                                    </div>
+                                    <div style="color: #16a34a; font-size: 13px; margin-top: 8px; font-weight: bold;">
+                                        ✅ Active
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                document.getElementById('studentsContainer').innerHTML = html;
+
+            } catch (err) {
+                console.error('Error loading students:', err);
+                document.getElementById('studentsContainer').innerHTML = '<p style="text-align: center; color: #dc2626;">❌ Failed to load students: ' + err.message + '</p>';
+            }
+        }
+
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+
+        // Auto-refresh data every 5 seconds
+        setInterval(() => {
+            loadAttendanceRecords();
+            loadRegisteredStudents();
+        }, 5000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iris Attendance System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="mobile-container">
+        <!-- Header -->
+        <header class="header">
+            <h1>🎓 Iris Attendance</h1>
+            <p class="subtitle">Biometric Attendance System</p>
+        </header>
+
+        <!-- Main Navigation -->
+        <div class="main-menu">
+            <div class="menu-card" onclick="navigateTo('register.html')">
+                <div class="menu-icon">👤</div>
+                <h2>New Student</h2>
+                <p>Register Face & Enroll</p>
+            </div>
+
+            <div class="menu-card" onclick="navigateTo('attendance.html')">
+                <div class="menu-icon">📸</div>
+                <h2>Mark Attendance</h2>
+                <p>Scan Face & Mark Present</p>
+            </div>
+
+            <div class="menu-card" onclick="navigateTo('dashboard.html')">
+                <div class="menu-icon">📊</div>
+                <h2>View Records</h2>
+                <p>See All Attendance</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>MongoDB Cloud Attendance System</p>
+        </footer>
+    </div>
+
+    <script>
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+    </script>
+</body>
+</html>
