@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Student Registration - Iris Attendance</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="mobile-container">
+        <!-- Header -->
+        <header class="header">
+            <button class="back-btn" onclick="goBack()">← Back</button>
+            <h1>Register New Student</h1>
+        </header>
+
+        <!-- Registration Form -->
+        <div class="form-container">
+            <div class="form-group">
+                <label for="studentName">Student Name *</label>
+                <input type="text" id="studentName" placeholder="Enter full name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="studentId">Student ID *</label>
+                <input type="text" id="studentId" placeholder="e.g., 2023003415" required>
+            </div>
+
+            <div class="form-group">
+                <label for="studentClass">Class *</label>
+                <input type="text" id="studentClass" placeholder="e.g., 10-A" required>
+            </div>
+
+            <div class="form-group">
+                <label>Capture Face Photo *</label>
+                <div class="camera-container">
+                    <video id="cameraVideo" autoplay muted playsinline webkit-playsinline></video>
+                    <button type="button" class="capture-btn" onclick="capturePhoto()">📸 Capture Photo</button>
+                </div>
+                <canvas id="canvas" style="display:none;"></canvas>
+                <div id="photoPreview" class="photo-preview"></div>
+            </div>
+
+            <button class="submit-btn" onclick="registerStudent()">✅ Register Student</button>
+            <div id="message" class="message"></div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Face data is securely stored in MongoDB</p>
+        </footer>
+    </div>
+
+    <script src="register.js"></script>
+</body>
+</html>
