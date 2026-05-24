@@ -1,4 +1,4 @@
-// Register Student Script
+    // Register Student Script
 let photoData = null;
 
 // Start camera on page load
@@ -131,7 +131,7 @@ async function registerStudent() {
         btn.disabled = true;
         btn.textContent = '⏳ Registering...';
 
-        const response = await fetch('http://localhost:5000/register-student', {
+        const response = await fetch(' https://urban-school-backend.onrender.com', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
