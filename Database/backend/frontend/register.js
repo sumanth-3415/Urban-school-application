@@ -131,7 +131,7 @@ async function registerStudent() {
         btn.disabled = true;
         btn.textContent = '⏳ Registering...';
 
-        const response = await fetch('http://localhost:5000/register-student', {
+        const response = await fetch(`${API_BASE_URL}/register-student`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

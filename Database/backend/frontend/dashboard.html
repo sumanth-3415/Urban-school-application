@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Iris Attendance</title>
     <link rel="stylesheet" href="style.css">
+    <script src="config.js"></script>
     <style>
         .stats-grid {
             display: grid;
@@ -153,7 +154,7 @@
 
         async function loadAttendanceRecords() {
             try {
-                const response = await fetch('http://localhost:5000/attendence');
+                const response = await fetch(`${API_BASE_URL}/attendence`);
                 const records = await response.json();
 
                 if (!Array.isArray(records) || records.length === 0) {
@@ -208,7 +209,7 @@
 
         async function loadRegisteredStudents() {
             try {
-                const response = await fetch('http://localhost:5000/students');
+                const response = await fetch(`${API_BASE_URL}/students`);
                 const students = await response.json();
 
                 if (!Array.isArray(students) || students.length === 0) {

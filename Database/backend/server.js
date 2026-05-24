@@ -8,7 +8,32 @@ const attendanceRoutes = require('./routes/attendence');
 
 const app = express();
 
-app.use(cors());
+// CORS Configuration for both localhost and Vercel deployment
+const corsOptions = {
+    origin: function (origin, callback) {
+        const allowedOrigins = [
+            'http://localhost:3000',
+            'http://localhost:5000',
+            'http://127.0.0.1:5000',
+            'http://127.0.0.1:3000'
+        ];
+        
+        // Allow requests from Vercel domains
+        if (!origin || origin.includes('vercel.app') || 
+            origin.includes('localhost') || 
+            origin.includes('127.0.0.1') ||
+            allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(null, true); // Allow all origins for development
+        }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
@@ -30,6 +55,10 @@ app.get('/', (req, res) => {
 
 app.use('/', attendanceRoutes);
 
-app.listen(5000, () => {
-    console.log('Server Running on Port 5000');
+// Dynamic Port Configuration - Use PORT env variable for Vercel, default to 5000
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+    console.log(`🚀 Server Running on Port ${PORT}`);
+    console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
 });

@@ -98,7 +98,7 @@ async function submitAttendance() {
 
     try {
         // First, get all registered students
-        const studentsResponse = await fetch('http://localhost:5000/students');
+        const studentsResponse = await fetch(`${API_BASE_URL}/students`);
         const students = await studentsResponse.json();
 
         if (!Array.isArray(students) || students.length === 0) {
@@ -111,7 +111,7 @@ async function submitAttendance() {
         const matchedStudent = students[0];
 
         // Verify the matched student
-        const verifyResponse = await fetch('http://localhost:5000/verify-face', {
+        const verifyResponse = await fetch(`${API_BASE_URL}/verify-face`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -194,7 +194,7 @@ async function confirmAttendance() {
 
         showMessage('⏳ Saving attendance record...', 'info');
 
-        const response = await fetch('http://localhost:5000/mark-attendence', {
+        const response = await fetch(`${API_BASE_URL}/mark-attendence`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
