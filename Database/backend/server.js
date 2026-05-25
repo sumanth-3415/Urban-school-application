@@ -8,18 +8,20 @@ const attendanceRoutes = require('./routes/attendence');
 
 const app = express();
 
-// CORS Configuration for both localhost and Vercel deployment
+// CORS Configuration for localhost, Vercel, and Render deployment
 const corsOptions = {
     origin: function (origin, callback) {
         const allowedOrigins = [
             'http://localhost:3000',
             'http://localhost:5000',
             'http://127.0.0.1:5000',
-            'http://127.0.0.1:3000'
+            'http://127.0.0.1:3000',
+            'https://urban-school-backend.onrender.com'
         ];
         
-        // Allow requests from Vercel domains
-        if (!origin || origin.includes('vercel.app') || 
+        // Allow requests from localhost, Render, and Vercel domains
+        if (!origin || origin.includes('onrender.com') || 
+            origin.includes('vercel.app') || 
             origin.includes('localhost') || 
             origin.includes('127.0.0.1') ||
             allowedOrigins.includes(origin)) {

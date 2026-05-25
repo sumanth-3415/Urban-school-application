@@ -10,8 +10,12 @@ function getApiBaseUrl() {
         return 'http://localhost:5000';
     }
     
-    // If running on Vercel or any other domain, use the current domain
-    // This assumes your backend is deployed at the same domain
+    // If running on Render or any other domain, use Render backend
+    if (hostname.includes('onrender.com') || hostname.includes('vercel.app')) {
+        return 'https://urban-school-backend.onrender.com';
+    }
+    
+    // Default fallback
     return `${protocol}//${hostname}`;
 }
 
